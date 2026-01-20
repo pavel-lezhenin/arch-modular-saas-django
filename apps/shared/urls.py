@@ -1,4 +1,5 @@
 """URL configuration for shared app."""
+
 from __future__ import annotations
 
 from django.http import JsonResponse
@@ -70,7 +71,7 @@ def liveness_check(request) -> JsonResponse:  # noqa: ANN001, ARG001
 
 
 urlpatterns = [
-    path("health/", health_check, name="health"),
+    path("", health_check, name="health"),
     path("ready/", readiness_check, name="ready"),
     path("live/", liveness_check, name="live"),
 ]

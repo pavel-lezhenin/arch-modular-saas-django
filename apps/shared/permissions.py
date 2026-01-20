@@ -1,4 +1,5 @@
 """DRF permission classes for tenant-based access control."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING, Any

@@ -1,4 +1,5 @@
 """WSGI config for arch-modular-saas-django project."""
+
 from __future__ import annotations
 
 import os

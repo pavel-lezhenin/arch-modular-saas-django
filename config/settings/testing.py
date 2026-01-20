@@ -1,15 +1,17 @@
 """Testing settings."""
+
 from __future__ import annotations
 
 from .base import *  # noqa: F401, F403
 
 DEBUG = False
 
-# Use in-memory SQLite for faster tests
+# Use SQLite for faster tests
+# pytest-django will automatically create a test database
 DATABASES = {  # noqa: F405
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": ":memory:",
+        "NAME": BASE_DIR / "test_db.sqlite3",  # noqa: F405
     }
 }
 

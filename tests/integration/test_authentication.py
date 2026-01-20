@@ -1,4 +1,5 @@
 """Integration tests for authentication module."""
+
 from __future__ import annotations
 
 import pytest
@@ -124,4 +125,5 @@ class TestPasswordChange:
 
         response = authenticated_client.post(url, data)
 
-        assert response.status_code == status.HTTP_403_FORBIDDEN
+        # Wrong password is a validation error (400), not permission denied (403)
+        assert response.status_code == status.HTTP_400_BAD_REQUEST

@@ -3,6 +3,7 @@
 This module demonstrates inter-module communication via signals.
 When a tenant is created/modified, other modules can react accordingly.
 """
+
 from __future__ import annotations
 
 import logging

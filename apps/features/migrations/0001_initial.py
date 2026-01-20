@@ -6,47 +6,78 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('tenants', '0001_initial'),
+        ("tenants", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Feature',
+            name="Feature",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('code', models.CharField(db_index=True, max_length=50, unique=True)),
-                ('name', models.CharField(max_length=100)),
-                ('description', models.TextField(blank=True)),
-                ('is_active', models.BooleanField(default=True)),
-                ('enabled_by_default', models.BooleanField(default=False)),
-                ('requires_plan_tier', models.CharField(blank=True, help_text='Minimum plan tier required (free, starter, professional, enterprise)', max_length=20, null=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("code", models.CharField(db_index=True, max_length=50, unique=True)),
+                ("name", models.CharField(max_length=100)),
+                ("description", models.TextField(blank=True)),
+                ("is_active", models.BooleanField(default=True)),
+                ("enabled_by_default", models.BooleanField(default=False)),
+                (
+                    "requires_plan_tier",
+                    models.CharField(
+                        blank=True,
+                        help_text="Minimum plan tier required (free, starter, professional, enterprise)",
+                        max_length=20,
+                        null=True,
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Feature',
-                'verbose_name_plural': 'Features',
-                'ordering': ['code'],
+                "verbose_name": "Feature",
+                "verbose_name_plural": "Features",
+                "ordering": ["code"],
             },
         ),
         migrations.CreateModel(
-            name='TenantFeature',
+            name="TenantFeature",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('is_enabled', models.BooleanField(default=True)),
-                ('feature', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tenant_overrides', to='features.feature')),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='feature_flags', to='tenants.tenant')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("is_enabled", models.BooleanField(default=True)),
+                (
+                    "feature",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tenant_overrides",
+                        to="features.feature",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="feature_flags",
+                        to="tenants.tenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Tenant Feature',
-                'verbose_name_plural': 'Tenant Features',
-                'unique_together': {('tenant', 'feature')},
+                "verbose_name": "Tenant Feature",
+                "verbose_name_plural": "Tenant Features",
+                "unique_together": {("tenant", "feature")},
             },
         ),
     ]

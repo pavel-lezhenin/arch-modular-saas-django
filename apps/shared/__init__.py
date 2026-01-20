@@ -7,6 +7,7 @@ This module provides:
 - Email backends with graceful degradation
 - Health check endpoints
 """
+
 from __future__ import annotations
 
 from .roles import Permission, Role, has_permission

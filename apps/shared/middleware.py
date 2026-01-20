@@ -1,4 +1,5 @@
 """Middleware for tenant context handling."""
+
 from __future__ import annotations
 
 import contextvars

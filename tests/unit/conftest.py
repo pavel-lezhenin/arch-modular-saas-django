@@ -1,4 +1,5 @@
 """Unit test fixtures - no external dependencies."""
+
 from __future__ import annotations
 
 from unittest.mock import MagicMock

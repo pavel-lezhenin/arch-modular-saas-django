@@ -1,4 +1,5 @@
 """Django signals for members module."""
+
 from __future__ import annotations
 
 import logging

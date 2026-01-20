@@ -3,6 +3,7 @@
 This module contains settings shared across all environments.
 Environment-specific settings should go in development.py, production.py, or testing.py.
 """
+
 from __future__ import annotations
 
 from pathlib import Path
@@ -48,6 +49,9 @@ class AppSettings(BaseSettings):
     SMTP_PORT: int = 1025
     EMAIL_FROM: str = "noreply@example.com"
 
+    # Logging
+    LOG_LEVEL: str = "INFO"
+
     # Storage
     MINIO_ENDPOINT: str = "localhost:9000"
     MINIO_ACCESS_KEY: str = "minioadmin"
@@ -78,6 +82,9 @@ INSTALLED_APPS = [
     "django.contrib.sites",
     # Third-party
     "rest_framework",
+    "rest_framework.authtoken",
+    "dj_rest_auth",
+    "dj_rest_auth.registration",
     "corsheaders",
     "django_filters",
     "allauth",
@@ -86,6 +93,7 @@ INSTALLED_APPS = [
     "allauth.socialaccount.providers.google",
     "allauth.socialaccount.providers.github",
     "storages",
+    "drf_spectacular",
     # Local apps (modules)
     "apps.shared",
     "apps.tenants",
@@ -209,6 +217,7 @@ SITE_ID = 1
 # REST Framework
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        "rest_framework.authentication.TokenAuthentication",
         "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
@@ -221,7 +230,26 @@ REST_FRAMEWORK = {
     ],
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
-    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.openapi.AutoSchema",
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    "EXCEPTION_HANDLER": "apps.shared.exception_handler.custom_exception_handler",
+}
+
+# DRF Spectacular (OpenAPI)
+SPECTACULAR_SETTINGS = {
+    "TITLE": "SaaS Backend API",
+    "DESCRIPTION": "Multi-tenant SaaS Backend API",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
+    "TAGS": [
+        {"name": "auth", "description": "Authentication (login, logout, password)"},
+        {"name": "registration", "description": "User registration"},
+        {"name": "users", "description": "User profile and sessions"},
+        {"name": "tenants", "description": "Tenant (workspace) management"},
+        {"name": "members", "description": "Team members and invitations"},
+        {"name": "billing", "description": "Plans, subscriptions, usage"},
+        {"name": "features", "description": "Feature flags management"},
+        {"name": "health", "description": "Health checks"},
+    ],
 }
 
 # CORS
@@ -231,11 +259,11 @@ CORS_ALLOWED_ORIGINS = [
     "http://127.0.0.1:3000",
 ]
 
-# Allauth
-ACCOUNT_AUTHENTICATION_METHOD = "email"
-ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_USERNAME_REQUIRED = False
+# Allauth (v0.63+ settings)
+ACCOUNT_LOGIN_METHODS = {"email"}  # Login by email only
+ACCOUNT_SIGNUP_FIELDS = ["email*", "password1*", "password2*"]  # Required signup fields
 ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_VERIFICATION = "optional"  # "mandatory", "optional", or "none"
 SOCIALACCOUNT_AUTO_SIGNUP = True
 
 # OAuth providers configuration (graceful degradation)
@@ -297,6 +325,8 @@ AWS_DEFAULT_ACL = None
 AWS_QUERYSTRING_AUTH = True
 
 # Logging
+LOG_LEVEL = env.LOG_LEVEL
+
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
@@ -318,17 +348,27 @@ LOGGING = {
     },
     "root": {
         "handlers": ["console"],
-        "level": "INFO",
+        "level": LOG_LEVEL,
     },
     "loggers": {
         "django": {
             "handlers": ["console"],
-            "level": "INFO",
+            "level": LOG_LEVEL,
+            "propagate": False,
+        },
+        "django.utils.autoreload": {
+            "handlers": ["console"],
+            "level": "WARNING",  # Suppress autoreload spam
+            "propagate": False,
+        },
+        "django.db.backends": {
+            "handlers": ["console"],
+            "level": "WARNING",  # Suppress SQL query logs
             "propagate": False,
         },
         "apps": {
             "handlers": ["console"],
-            "level": "DEBUG",
+            "level": LOG_LEVEL,
             "propagate": False,
         },
     },

@@ -1,4 +1,5 @@
 """Base models with common fields."""
+
 from __future__ import annotations
 
 import uuid

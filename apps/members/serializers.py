@@ -1,4 +1,5 @@
 """Serializers for members module."""
+
 from __future__ import annotations
 
 from rest_framework import serializers
@@ -51,9 +52,7 @@ class MemberUpdateSerializer(serializers.ModelSerializer):
 class InvitationSerializer(serializers.ModelSerializer):
     """Serializer for Invitation model."""
 
-    invited_by_email = serializers.EmailField(
-        source="invited_by.email", read_only=True
-    )
+    invited_by_email = serializers.EmailField(source="invited_by.email", read_only=True)
     is_valid = serializers.BooleanField(read_only=True)
 
     class Meta:

@@ -1,4 +1,5 @@
 """Business logic services for members module."""
+
 from __future__ import annotations
 
 import logging
@@ -451,9 +452,7 @@ class InvitationService:
         return invitation
 
     @staticmethod
-    def get_tenant_invitations(
-        tenant: Tenant, *, pending_only: bool = True
-    ) -> list[Invitation]:
+    def get_tenant_invitations(tenant: Tenant, *, pending_only: bool = True) -> list[Invitation]:
         """Get all invitations for a tenant.
 
         Args:

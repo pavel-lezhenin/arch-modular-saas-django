@@ -1,7 +1,6 @@
 """Unit tests for shared exceptions module."""
-from __future__ import annotations
 
-import pytest
+from __future__ import annotations
 
 from apps.shared.exceptions import (
     AppError,

@@ -1,7 +1,6 @@
 """Unit tests for shared roles module."""
-from __future__ import annotations
 
-import pytest
+from __future__ import annotations
 
 from apps.shared.roles import Permission, Role, has_permission
 
@@ -54,7 +53,8 @@ class TestHasPermission:
     def test_admin_intermediate_permissions(self):
         """Test that admin role has more than member but less than owner."""
         assert has_permission(Role.ADMIN, Permission.MEMBERS_INVITE) is True
-        assert has_permission(Role.ADMIN, Permission.BILLING_MANAGE) is True  # Admin can manage billing
+        # Admin can manage billing
+        assert has_permission(Role.ADMIN, Permission.BILLING_MANAGE) is True
         # Owner-only permissions
         assert has_permission(Role.ADMIN, Permission.TENANT_DELETE) is False
 

@@ -1,4 +1,5 @@
 """Business logic services for billing module."""
+
 from __future__ import annotations
 
 import logging
@@ -253,9 +254,7 @@ class SubscriptionService:
             Updated Subscription or None if not found.
         """
         try:
-            subscription = Subscription.objects.get(
-                stripe_subscription_id=stripe_subscription_id
-            )
+            subscription = Subscription.objects.get(stripe_subscription_id=stripe_subscription_id)
         except Subscription.DoesNotExist:
             logger.warning(
                 "Subscription not found for Stripe ID: %s",
@@ -451,14 +450,10 @@ class UsageService:
         today = timezone.now().date()
         period_start = today.replace(day=1)
 
-        return list(
-            UsageRecord.objects.filter(tenant=tenant, period_start=period_start)
-        )
+        return list(UsageRecord.objects.filter(tenant=tenant, period_start=period_start))
 
     @staticmethod
-    def get_usage_history(
-        tenant: Tenant, months: int = 6
-    ) -> list[UsageRecord]:
+    def get_usage_history(tenant: Tenant, months: int = 6) -> list[UsageRecord]:
         """Get usage history for a tenant.
 
         Args:
@@ -471,7 +466,7 @@ class UsageService:
         cutoff = timezone.now().date() - relativedelta(months=months)
 
         return list(
-            UsageRecord.objects.filter(
-                tenant=tenant, period_start__gte=cutoff
-            ).order_by("-period_start", "metric")
+            UsageRecord.objects.filter(tenant=tenant, period_start__gte=cutoff).order_by(
+                "-period_start", "metric"
+            )
         )

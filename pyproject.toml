@@ -61,8 +61,10 @@ dev = [
     "pytest>=8.3",
     "pytest-django>=4.9",
     "pytest-cov>=6.0",
+    "pytest-xdist>=3.5",
     "factory-boy>=3.3",
     "faker>=30.0",
+    "testcontainers>=4.8",
     
     # Code quality
     "ruff>=0.7",
@@ -79,6 +81,9 @@ dev = [
     "django-extensions>=3.2",
     "django-debug-toolbar>=4.4",
     "pre-commit>=3.8.0",
+    
+    # API documentation
+    "drf-spectacular>=0.29",
 ]
 
 [tool.hatch.build.targets.wheel]
@@ -153,8 +158,11 @@ addopts = [
     "-v",
     "--strict-markers",
     "--tb=short",
-    "--cov=apps",
-    "--cov-report=term-missing",
+]
+markers = [
+    "unit: Unit tests (fast, no external dependencies)",
+    "integration: Integration tests (require testcontainers/docker)",
+    "slow: Slow tests that should be run less frequently",
 ]
 
 # ==================================================

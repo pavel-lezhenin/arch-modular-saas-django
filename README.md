@@ -190,11 +190,11 @@ class MemberViewSet(viewsets.ModelViewSet):
 
 ### Prerequisites
 
-- Python 3.12+
-- Docker & Docker Compose
-- uv (recommended) or pip
+- **Python 3.12+** — [Download](https://www.python.org/downloads/)
+- **Docker & Docker Compose** — [Download](https://www.docker.com/products/docker-desktop/)
+- **uv** (recommended) — `pip install uv` or `curl -LsSf https://astral.sh/uv/install.sh | sh`
 
-### Installation
+### 1. Clone & Setup Environment
 
 ```bash
 cd packages/arch-modular-saas-django
@@ -207,42 +207,107 @@ source .venv/bin/activate  # Linux/Mac
 # Install dependencies
 uv pip install -e ".[dev]"
 
-# Copy environment
+# Copy environment file
 cp .env.example .env
 ```
 
-### Start Services
+### 2. Start Infrastructure (Docker)
 
 ```bash
-# Start infrastructure
+# Start PostgreSQL, Redis, MailHog, MinIO, Grafana, Loki
 docker compose up -d
 
-# Apply migrations
+# Verify services are running
+docker compose ps
+```
+
+**Services started:**
+
+| Service | Port | Description |
+|---------|------|-------------|
+| PostgreSQL | 5432 | Primary database |
+| Redis | 6379 | Cache & sessions |
+| MailHog | 8025 | Email testing UI |
+| MinIO | 9000/9001 | S3-compatible storage |
+| Grafana | 3000 | Monitoring dashboards |
+| Loki | 3100 | Log aggregation |
+
+### 3. Initialize Database
+
+```bash
+# Apply all migrations
 python manage.py migrate
 
-# Create initial data (plans, features)
-python manage.py setup_initial_data
+# Seed database with demo data
+python manage.py seed_data
 
-# Create superuser for admin
+# Or just create superuser manually
 python manage.py createsuperuser
 ```
 
-### Run Server
+### 4. Run Development Server
 
 ```bash
 python manage.py runserver
+# or with auto-reload disabled (more stable on Windows)
+python manage.py runserver --noreload
 ```
 
-### Access Points
+### 5. Access Application
 
 | Service | URL | Credentials |
 |---------|-----|-------------|
-| **API** | http://localhost:8000/api/ | — |
-| **Django Admin** | http://localhost:8000/admin/ | superuser credentials |
-| **API Docs** | http://localhost:8000/api/docs/ | — |
+| **API Docs (Swagger)** | http://localhost:8000/api/docs/ | — |
+| **API Docs (ReDoc)** | http://localhost:8000/api/redoc/ | — |
+| **OpenAPI Schema** | http://localhost:8000/api/schema/ | — |
+| **Django Admin** | http://localhost:8000/admin/ | admin@demo.saas.local / admin123 |
 | **MailHog** | http://localhost:8025 | — |
 | **Grafana** | http://localhost:3000 | admin / admin |
 | **MinIO Console** | http://localhost:9001 | minioadmin / minioadmin |
+
+## 🌱 Seed Data
+
+The `seed_data` command creates demo data for development:
+
+```bash
+# Create all seed data
+python manage.py seed_data
+
+# Reset and recreate all data
+python manage.py seed_data --reset
+
+# Seed specific entities
+python manage.py seed_data --plans      # Billing plans only
+python manage.py seed_data --features   # Feature flags only
+python manage.py seed_data --users      # Users only
+python manage.py seed_data --tenants    # Tenants only
+```
+
+### Demo Credentials
+
+| User | Email | Password | Role |
+|------|-------|----------|------|
+| **Superuser** | admin@demo.saas.local | admin123 | Django admin |
+| **Owner** | owner@demo.saas.local | owner123 | Tenant owner |
+| **Manager** | manager@demo.saas.local | manager123 | Tenant admin |
+| **Member** | member@demo.saas.local | member123 | Regular member |
+
+### Demo Tenants
+
+| Tenant | Slug | Plan | Status |
+|--------|------|------|--------|
+| Acme Corporation | acme-corp | Professional | Active |
+| Startup Inc | startup-inc | Free | Trial |
+| Enterprise Global | enterprise-global | Enterprise | Active |
+
+### Billing Plans
+
+| Plan | Price/month | Max Members | Features |
+|------|-------------|-------------|----------|
+| Free | $0 | 2 | Basic |
+| Starter | $19 | 5 | API access |
+| Professional | $49 | 20 | Priority support, Custom domain |
+| Enterprise | $199 | 100 | SSO, Audit logs, Dedicated support |
 
 ## 🖥️ Django Admin
 
@@ -268,28 +333,61 @@ Django Admin is pre-configured for all modules:
 
 ```bash
 # Create demo tenant with test user
-python manage.py setup_initial_data --demo
+python manage.py seed_data
+
+# Reset and recreate all demo data:
+python manage.py seed_data --reset
 
 # Demo credentials:
-# Email: demo@example.com
-# Password: demo1234
-# Tenant: demo
+# Email: admin@demo.saas.local
+# Password: admin123
+# Tenant: acme-corp
 ```
 
 ## 🧪 Testing
 
+### Test Strategy
+
+| Type | Location | Database | Speed | Purpose |
+|------|----------|----------|-------|---------|
+| **Unit** | `tests/unit/` | None | Fast | Business logic, services |
+| **Integration** | `tests/integration/` | SQLite | Medium | API endpoints, ORM |
+| **Integration + PostgreSQL** | `tests/integration/` | PostgreSQL | Slow | DB-specific features |
+
+### Running Tests
+
 ```bash
-# Run all tests
+# All tests (SQLite - fast)
 pytest
 
-# Unit tests only (no DB required)
+# Unit tests only (no database)
 pytest tests/unit -v
 
-# Integration tests (requires Docker)
+# Integration tests (SQLite)
 pytest tests/integration -v
 
-# With coverage
+# Integration tests with real PostgreSQL (requires Docker)
+pytest tests/integration -v --use-postgres
+
+# With coverage report
 pytest --cov=apps --cov-report=html
+open htmlcov/index.html
+
+# Parallel execution
+pytest -n auto
+```
+
+### Test Markers
+
+```bash
+# Run only unit tests
+pytest -m unit
+
+# Run only integration tests
+pytest -m integration
+
+# Skip slow tests
+pytest -m "not slow"
 ```
 
 ## 📊 Code Statistics

@@ -1,4 +1,5 @@
 """Member and Invitation models."""
+
 from __future__ import annotations
 
 import secrets
@@ -133,9 +134,7 @@ class Invitation(BaseModel):
     @property
     def is_expired(self) -> bool:
         """Check if invitation has expired."""
-        return (
-            self.status == InvitationStatus.PENDING and timezone.now() > self.expires_at
-        )
+        return self.status == InvitationStatus.PENDING and timezone.now() > self.expires_at
 
     @property
     def is_valid(self) -> bool:

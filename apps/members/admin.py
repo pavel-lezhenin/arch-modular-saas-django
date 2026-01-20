@@ -1,4 +1,5 @@
 """Django admin configuration for members."""
+
 from __future__ import annotations
 
 from django.contrib import admin

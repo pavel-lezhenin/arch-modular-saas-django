@@ -1,4 +1,5 @@
 """Integration tests for tenants module."""
+
 from __future__ import annotations
 
 import pytest

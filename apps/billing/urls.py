@@ -1,4 +1,5 @@
 """URL configuration for billing module."""
+
 from __future__ import annotations
 
 from django.urls import include, path
@@ -20,8 +21,10 @@ router = DefaultRouter()
 router.register("plans", PlanViewSet, basename="plan")
 
 urlpatterns = [
+    # Plan listing (public)
+    path("", include(router.urls)),
     # Billing overview
-    path("", BillingView.as_view(), name="overview"),
+    path("overview/", BillingView.as_view(), name="overview"),
     # Subscription management
     path("subscription/", SubscriptionView.as_view(), name="subscription"),
     # Stripe integration
@@ -30,6 +33,4 @@ urlpatterns = [
     path("webhook/", StripeWebhookView.as_view(), name="webhook"),
     # Usage tracking
     path("usage/", UsageView.as_view(), name="usage"),
-    # Plan listing
-    path("", include(router.urls)),
 ]

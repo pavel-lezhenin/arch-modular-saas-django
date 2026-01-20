@@ -1,4 +1,5 @@
 """Business logic services for authentication module."""
+
 from __future__ import annotations
 
 import logging
@@ -146,11 +147,11 @@ class UserService:
             new_password: New password to set.
 
         Raises:
-            PermissionDeniedError: If current password is incorrect.
+            ValidationError: If current password is incorrect.
         """
         if not user.check_password(current_password):
             msg = "Incorrect current password"
-            raise PermissionDeniedError(msg)
+            raise ValidationError(msg, "current_password")
 
         user.set_password(new_password)
         user.save(update_fields=["password"])

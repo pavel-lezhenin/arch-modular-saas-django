@@ -6,75 +6,145 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [
-        ('tenants', '0001_initial'),
+        ("tenants", "0001_initial"),
     ]
 
     operations = [
         migrations.CreateModel(
-            name='Plan',
+            name="Plan",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=100)),
-                ('tier', models.CharField(choices=[('free', 'Free'), ('starter', 'Starter'), ('professional', 'Professional'), ('enterprise', 'Enterprise')], max_length=20, unique=True)),
-                ('description', models.TextField(blank=True)),
-                ('price_monthly', models.PositiveIntegerField(default=0)),
-                ('price_yearly', models.PositiveIntegerField(default=0)),
-                ('stripe_price_id_monthly', models.CharField(blank=True, max_length=255, null=True)),
-                ('stripe_price_id_yearly', models.CharField(blank=True, max_length=255, null=True)),
-                ('max_members', models.PositiveIntegerField(default=5)),
-                ('max_storage_gb', models.PositiveIntegerField(default=1)),
-                ('is_active', models.BooleanField(default=True)),
-                ('is_public', models.BooleanField(default=True)),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=100)),
+                (
+                    "tier",
+                    models.CharField(
+                        choices=[
+                            ("free", "Free"),
+                            ("starter", "Starter"),
+                            ("professional", "Professional"),
+                            ("enterprise", "Enterprise"),
+                        ],
+                        max_length=20,
+                        unique=True,
+                    ),
+                ),
+                ("description", models.TextField(blank=True)),
+                ("price_monthly", models.PositiveIntegerField(default=0)),
+                ("price_yearly", models.PositiveIntegerField(default=0)),
+                (
+                    "stripe_price_id_monthly",
+                    models.CharField(blank=True, max_length=255, null=True),
+                ),
+                ("stripe_price_id_yearly", models.CharField(blank=True, max_length=255, null=True)),
+                ("max_members", models.PositiveIntegerField(default=5)),
+                ("max_storage_gb", models.PositiveIntegerField(default=1)),
+                ("is_active", models.BooleanField(default=True)),
+                ("is_public", models.BooleanField(default=True)),
             ],
             options={
-                'verbose_name': 'Plan',
-                'verbose_name_plural': 'Plans',
-                'ordering': ['price_monthly'],
+                "verbose_name": "Plan",
+                "verbose_name_plural": "Plans",
+                "ordering": ["price_monthly"],
             },
         ),
         migrations.CreateModel(
-            name='Subscription',
+            name="Subscription",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('status', models.CharField(choices=[('active', 'Active'), ('past_due', 'Past Due'), ('cancelled', 'Cancelled'), ('incomplete', 'Incomplete'), ('trialing', 'Trialing')], default='active', max_length=20)),
-                ('billing_interval', models.CharField(choices=[('monthly', 'Monthly'), ('yearly', 'Yearly')], default='monthly', max_length=20)),
-                ('stripe_subscription_id', models.CharField(blank=True, max_length=255, null=True)),
-                ('current_period_start', models.DateTimeField(blank=True, null=True)),
-                ('current_period_end', models.DateTimeField(blank=True, null=True)),
-                ('cancelled_at', models.DateTimeField(blank=True, null=True)),
-                ('plan', models.ForeignKey(on_delete=django.db.models.deletion.PROTECT, related_name='subscriptions', to='billing.plan')),
-                ('tenant', models.OneToOneField(on_delete=django.db.models.deletion.CASCADE, related_name='subscription', to='tenants.tenant')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[
+                            ("active", "Active"),
+                            ("past_due", "Past Due"),
+                            ("cancelled", "Cancelled"),
+                            ("incomplete", "Incomplete"),
+                            ("trialing", "Trialing"),
+                        ],
+                        default="active",
+                        max_length=20,
+                    ),
+                ),
+                (
+                    "billing_interval",
+                    models.CharField(
+                        choices=[("monthly", "Monthly"), ("yearly", "Yearly")],
+                        default="monthly",
+                        max_length=20,
+                    ),
+                ),
+                ("stripe_subscription_id", models.CharField(blank=True, max_length=255, null=True)),
+                ("current_period_start", models.DateTimeField(blank=True, null=True)),
+                ("current_period_end", models.DateTimeField(blank=True, null=True)),
+                ("cancelled_at", models.DateTimeField(blank=True, null=True)),
+                (
+                    "plan",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.PROTECT,
+                        related_name="subscriptions",
+                        to="billing.plan",
+                    ),
+                ),
+                (
+                    "tenant",
+                    models.OneToOneField(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="subscription",
+                        to="tenants.tenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Subscription',
-                'verbose_name_plural': 'Subscriptions',
+                "verbose_name": "Subscription",
+                "verbose_name_plural": "Subscriptions",
             },
         ),
         migrations.CreateModel(
-            name='UsageRecord',
+            name="UsageRecord",
             fields=[
-                ('id', models.UUIDField(default=uuid.uuid4, editable=False, primary_key=True, serialize=False)),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('metric', models.CharField(max_length=50)),
-                ('quantity', models.PositiveIntegerField(default=0)),
-                ('period_start', models.DateField()),
-                ('period_end', models.DateField()),
-                ('tenant', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='usage_records', to='tenants.tenant')),
+                (
+                    "id",
+                    models.UUIDField(
+                        default=uuid.uuid4, editable=False, primary_key=True, serialize=False
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("metric", models.CharField(max_length=50)),
+                ("quantity", models.PositiveIntegerField(default=0)),
+                ("period_start", models.DateField()),
+                ("period_end", models.DateField()),
+                (
+                    "tenant",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="usage_records",
+                        to="tenants.tenant",
+                    ),
+                ),
             ],
             options={
-                'verbose_name': 'Usage Record',
-                'verbose_name_plural': 'Usage Records',
-                'ordering': ['-period_start'],
-                'unique_together': {('tenant', 'metric', 'period_start')},
+                "verbose_name": "Usage Record",
+                "verbose_name_plural": "Usage Records",
+                "ordering": ["-period_start"],
+                "unique_together": {("tenant", "metric", "period_start")},
             },
         ),
     ]

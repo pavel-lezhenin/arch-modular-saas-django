@@ -1,4 +1,5 @@
 """Business logic services for features module."""
+
 from __future__ import annotations
 
 import logging
@@ -106,9 +107,7 @@ class FeatureService:
                 )
 
         # Check tenant-specific override
-        tenant_override = TenantFeature.objects.filter(
-            tenant=tenant, feature=feature
-        ).first()
+        tenant_override = TenantFeature.objects.filter(tenant=tenant, feature=feature).first()
 
         if tenant_override:
             status = "enabled" if tenant_override.is_enabled else "disabled"
@@ -154,20 +153,20 @@ class FeatureService:
 
         for feature in features:
             is_enabled, reason = FeatureService.is_feature_enabled(tenant, feature.code)
-            result.append({
-                "code": feature.code,
-                "name": feature.name,
-                "is_enabled": is_enabled,
-                "reason": reason,
-            })
+            result.append(
+                {
+                    "code": feature.code,
+                    "name": feature.name,
+                    "is_enabled": is_enabled,
+                    "reason": reason,
+                }
+            )
 
         return result
 
     @staticmethod
     @transaction.atomic
-    def set_tenant_feature(
-        tenant: Tenant, feature_code: str, is_enabled: bool
-    ) -> TenantFeature:
+    def set_tenant_feature(tenant: Tenant, feature_code: str, is_enabled: bool) -> TenantFeature:
         """Set feature flag for a tenant.
 
         Args:

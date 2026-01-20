@@ -1,4 +1,5 @@
 """API views for billing module."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -212,10 +213,12 @@ class CheckoutView(APIView):
                 new_plan=plan,
                 billing_interval=billing_interval,
             )
-            return Response({
-                "subscription": SubscriptionSerializer(subscription).data,
-                "message": "Stripe not configured - subscription created directly",
-            })
+            return Response(
+                {
+                    "subscription": SubscriptionSerializer(subscription).data,
+                    "message": "Stripe not configured - subscription created directly",
+                }
+            )
 
         return Response({"checkout_url": checkout_url})
 
@@ -308,9 +311,7 @@ class StripeWebhookView(APIView):
 
             sig_header = request.META.get("HTTP_STRIPE_SIGNATURE")
             try:
-                event = stripe.Webhook.construct_event(
-                    request.body, sig_header, webhook_secret
-                )
+                event = stripe.Webhook.construct_event(request.body, sig_header, webhook_secret)
             except ValueError:
                 return Response({"error": "Invalid payload"}, status=400)
             except stripe.error.SignatureVerificationError:

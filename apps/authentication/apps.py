@@ -1,4 +1,5 @@
 """Django app configuration for authentication."""
+
 from __future__ import annotations
 
 from django.apps import AppConfig

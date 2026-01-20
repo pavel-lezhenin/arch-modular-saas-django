@@ -1,4 +1,5 @@
 """Django signals for features module."""
+
 from __future__ import annotations
 
 import logging
@@ -35,6 +36,7 @@ def feature_changed(
     for tenant in Tenant.objects.all():
         cache_key = f"feature:{tenant.id}:{instance.code}"
         from django.core.cache import cache
+
         cache.delete(cache_key)
 
 
@@ -60,4 +62,5 @@ def tenant_feature_changed(
     # Invalidate cache for this specific tenant/feature
     cache_key = f"feature:{instance.tenant.id}:{instance.feature.code}"
     from django.core.cache import cache
+
     cache.delete(cache_key)

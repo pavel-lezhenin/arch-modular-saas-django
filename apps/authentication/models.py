@@ -1,4 +1,5 @@
 """Custom User model and related models."""
+
 from __future__ import annotations
 
 import uuid

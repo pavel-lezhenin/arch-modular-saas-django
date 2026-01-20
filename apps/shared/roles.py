@@ -1,4 +1,5 @@
 """Role and permission definitions for tenant-based access control."""
+
 from __future__ import annotations
 
 from enum import StrEnum

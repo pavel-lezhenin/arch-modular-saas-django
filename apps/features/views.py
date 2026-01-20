@@ -1,4 +1,5 @@
 """API views for features module."""
+
 from __future__ import annotations
 
 from typing import TYPE_CHECKING
@@ -100,12 +101,14 @@ class TenantFeaturesView(APIView):
         )
 
         feature = FeatureService.get_feature(serializer.validated_data["feature_code"])
-        return Response({
-            "code": feature.code,
-            "name": feature.name,
-            "is_enabled": is_enabled,
-            "reason": reason,
-        })
+        return Response(
+            {
+                "code": feature.code,
+                "name": feature.name,
+                "is_enabled": is_enabled,
+                "reason": reason,
+            }
+        )
 
     def delete(self, request: Request) -> Response:
         """Reset feature flag to default for current tenant.
@@ -136,12 +139,14 @@ class TenantFeaturesView(APIView):
         is_enabled, reason = FeatureService.is_feature_enabled(tenant, feature_code)
         feature = FeatureService.get_feature(feature_code)
 
-        return Response({
-            "code": feature.code,
-            "name": feature.name,
-            "is_enabled": is_enabled,
-            "reason": reason,
-        })
+        return Response(
+            {
+                "code": feature.code,
+                "name": feature.name,
+                "is_enabled": is_enabled,
+                "reason": reason,
+            }
+        )
 
 
 class FeatureCheckView(APIView):
@@ -174,9 +179,11 @@ class FeatureCheckView(APIView):
         except Exception:
             name = feature_code
 
-        return Response({
-            "code": feature_code,
-            "name": name,
-            "is_enabled": is_enabled,
-            "reason": reason,
-        })
+        return Response(
+            {
+                "code": feature_code,
+                "name": name,
+                "is_enabled": is_enabled,
+                "reason": reason,
+            }
+        )
