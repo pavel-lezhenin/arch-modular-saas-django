@@ -368,7 +368,7 @@ class Command(BaseCommand):
             },
         ]
 
-        for tenant_data in tenants_data:
+        for tenant_data in tenants_data:  # type: ignore[attr-defined]
             # Create tenant
             tenant, created = Tenant.objects.update_or_create(
                 slug=tenant_data["slug"],

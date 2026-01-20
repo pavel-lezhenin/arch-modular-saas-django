@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import secrets
-from datetime import timedelta
+from datetime import datetime, timedelta
 
 from django.conf import settings
 from django.db import models
@@ -74,7 +74,7 @@ def generate_invite_token() -> str:
     return secrets.token_urlsafe(32)
 
 
-def default_expires_at():  # noqa: ANN201
+def default_expires_at() -> datetime:
     """Calculate default invitation expiration (7 days)."""
     return timezone.now() + timedelta(days=7)
 

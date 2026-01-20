@@ -8,7 +8,7 @@ from django.urls import path
 app_name = "shared"
 
 
-def health_check(request) -> JsonResponse:  # noqa: ANN001, ARG001
+def health_check(request: object) -> JsonResponse:  # noqa: ARG001
     """Health check endpoint.
 
     Returns:
@@ -16,7 +16,7 @@ def health_check(request) -> JsonResponse:  # noqa: ANN001, ARG001
     """
     from django.db import connection
 
-    health = {
+    health: dict[str, object] = {
         "status": "healthy",
         "services": {},
     }
@@ -48,7 +48,7 @@ def health_check(request) -> JsonResponse:  # noqa: ANN001, ARG001
     return JsonResponse(health, status=status_code)
 
 
-def readiness_check(request) -> JsonResponse:  # noqa: ANN001, ARG001
+def readiness_check(request: object) -> JsonResponse:  # noqa: ARG001
     """Readiness check endpoint.
 
     Checks if the service is ready to receive traffic.

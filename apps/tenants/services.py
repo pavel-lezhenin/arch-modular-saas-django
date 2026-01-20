@@ -153,7 +153,7 @@ class TenantService:
     @transaction.atomic
     def update_settings(
         tenant_id: UUID,
-        **kwargs,  # noqa: ANN003
+        **kwargs: object,
     ) -> TenantSettings:
         """Update tenant settings.
 
