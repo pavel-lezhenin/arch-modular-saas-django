@@ -90,6 +90,12 @@ class CanRemoveMembers(TenantPermission):
     required_permission = Permission.MEMBERS_REMOVE
 
 
+class CanManageMembers(TenantPermission):
+    """User can manage members (invite, remove, change roles)."""
+
+    required_permission = Permission.MEMBERS_INVITE
+
+
 class CanManageBilling(TenantPermission):
     """User can manage billing for the tenant."""
 
